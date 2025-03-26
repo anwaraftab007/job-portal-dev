@@ -34,20 +34,19 @@ const Signup = () => {
     }
     const submitHandler = async (e) => {
         e.preventDefault();
-        const formData = new FormData();    //formdata object
-        formData.append("fullname", input.fullname);
-        formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
-        formData.append("password", input.password);
-        formData.append("role", input.role);
-        if (input.file) {
-            formData.append("file", input.file);
-        }
-
+    
+        const userData = {
+            fullname: input.fullname,
+            email: input.email,
+            phoneNumber: input.phoneNumber,
+            password: input.password,
+            role: input.role
+        };
+    
         try {
             dispatch(setLoading(true));
-            const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
-                headers: { 'Content-Type': "multipart/form-data" },
+            const res = await axios.post(`${USER_API_END_POINT}/register`, userData, {
+                headers: { 'Content-Type': "application/json" },
                 withCredentials: true,
             });
             if (res.data.success) {
@@ -56,11 +55,12 @@ const Signup = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
-        } finally{
+            toast.error(error.response?.data?.message || "Something went wrong");
+        } finally {
             dispatch(setLoading(false));
         }
-    }
+    };
+    
 
     useEffect(()=>{
         if(user){
